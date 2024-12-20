@@ -1,0 +1,8 @@
+.idea
+.vscode
+.env
+.example.env
+Dockerfile
+*.yml
+vendor
+composer.lock
