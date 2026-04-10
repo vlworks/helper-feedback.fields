@@ -14,6 +14,7 @@ class FeedbackFields
 
     protected string $prefix_l10n = "BASIS_FIELDS_";
     protected array $fields = [];
+    protected array $fields_l01n = [];
     protected string $callback = '';
 
     private function __construct(){}
@@ -36,7 +37,11 @@ class FeedbackFields
 
         foreach ($this->fields as $field)
         {
-            $result[strtoupper($field)] = call_user_func($this->callback, $this->prefix_l10n . 'P_' . strtoupper($field));
+            if (in_array($field, array_keys($this->fields_l01n))) {
+                $result[strtoupper($field)] = $this->fields_l01n[$field];
+            } else {
+                $result[strtoupper($field)] = call_user_func($this->callback, $this->prefix_l10n . 'P_' . strtoupper($field));
+            }
         }
 
         return $result;
@@ -57,10 +62,14 @@ class FeedbackFields
         return $_result;
     }
 
-    public function addField(string $field): void
+    public function addField(string $field, string $name = ''): void
     {
-        if (!in_array($field, $this->fields))
+        if (!in_array($field, $this->fields)) {
             $this->fields[] = $field;
+
+            if (!empty($name))
+                $this->fields_l01n[$field] = $name;
+        }
     }
     public function setCallback(string $func): void
     {
